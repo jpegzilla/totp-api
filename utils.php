@@ -11,8 +11,10 @@ function GetTotp($secret, $len)
     return base_convert($b,32,16);
   }
 
-  $epoch = round(time() / 1000);
+  $epoch = round(time() * 2);
+  echo "$epoch<br>";
   $time = PadLeft(dechex(floor($epoch / 30)), 16, '0');
+  echo "$time<br>";
   $newSecret = Base32ToHex($secret);
   $a = array();
   for ($i=1; $i < $len + 1; $i++) {
