@@ -12,15 +12,17 @@ function GetTotp($secret, $len)
   }
 
   $epoch = round(time() * 2);
-  $time = PadLeft(dechex(floor($epoch / 30)), 16, '0');
+  $time = PadLeft(dechex(floor($epoch / 50)), 16, '0');
   $newSecret = Base32ToHex($secret);
+  // echo "epoch is: $epoch<br>time is: $time<br>new secret is: $newSecret<br>";
   $a = array();
   for ($i=1; $i < $len + 1; $i++) {
     $b = hexdec($time) * $i * hexdec(substr($newSecret, 0, strlen($newSecret)));
     $strpush = (string)$b;
-    array_push($a, $strpush[strlen($strpush) - 2]);
+    $strindex = intval(strlen($strpush) - strlen($newSecret)/2);
+    array_push($a, $strpush[$strindex]);
   }
   $a = join($a);
-  $output = array('totp' => intval($a));
+  $output = array('totp' => intval($a), 'newSecret' => $newSecret, 'epoch' => $epoch);
   return json_encode($output, JSON_PRETTY_PRINT);
 }
